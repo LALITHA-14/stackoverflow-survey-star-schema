@@ -1,0 +1,19 @@
+Incremental Sort  (cost=6227.97..9352.30 rows=48067 width=29) (actual time=1615.523..2007.086 rows=48019 loops=1)
+  Sort Key: c.country_name, f.convertedcompyearly, f.response_id
+  Presorted Key: c.country_name, f.convertedcompyearly
+  Full-sort Groups: 956  Sort Method: quicksort  Average Memory: 27kB  Peak Memory: 27kB
+  Pre-sorted Groups: 954  Sort Method: quicksort  Average Memory: 28kB  Peak Memory: 44kB
+  ->  WindowAgg  (cost=6227.94..7189.28 rows=48067 width=29) (actual time=1615.265..1821.264 rows=48019 loops=1)
+        ->  Sort  (cost=6227.94..6348.11 rows=48067 width=25) (actual time=1615.181..1687.793 rows=48019 loops=1)
+              Sort Key: c.country_name, f.convertedcompyearly
+              Sort Method: external merge  Disk: 2016kB
+              ->  Hash Join  (cost=6.19..2490.07 rows=48067 width=25) (actual time=0.210..544.687 rows=48019 loops=1)
+                    Hash Cond: (f.country_id = c.country_id)
+                    ->  Seq Scan on fact_responses f  (cost=0.00..2354.84 rows=48067 width=18) (actual time=0.027..512.562 rows=48019 loops=1)
+                          Filter: (convertedcompyearly IS NOT NULL)
+                          Rows Removed by Filter: 41165
+                    ->  Hash  (cost=3.86..3.86 rows=186 width=15) (actual time=0.131..0.134 rows=186 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 17kB
+                          ->  Seq Scan on dim_country c  (cost=0.00..3.86 rows=186 width=15) (actual time=0.038..0.075 rows=186 loops=1)
+Planning Time: 10.736 ms
+Execution Time: 2058.594 ms

@@ -1,0 +1,27 @@
+Sort  (cost=3235.28..3235.31 rows=12 width=59) (actual time=1639.984..1639.994 rows=20 loops=1)
+  Sort Key: ranked.country, ranked.technology_rank
+  Sort Method: quicksort  Memory: 27kB
+  ->  Subquery Scan on ranked  (cost=3233.80..3235.06 rows=12 width=59) (actual time=1639.613..1639.967 rows=20 loops=1)
+        Filter: (ranked.technology_rank <= 5)
+        Rows Removed by Filter: 188
+        ->  WindowAgg  (cost=3233.80..3234.61 rows=36 width=59) (actual time=1639.611..1639.942 rows=208 loops=1)
+              ->  Sort  (cost=3233.80..3233.89 rows=36 width=51) (actual time=1639.380..1639.404 rows=208 loops=1)
+                    Sort Key: c.country_name, (count(*)) DESC, (btrim(technology.technology))
+                    Sort Method: quicksort  Memory: 44kB
+                    ->  HashAggregate  (cost=3232.06..3232.51 rows=36 width=51) (actual time=1638.752..1638.814 rows=208 loops=1)
+                          Group Key: c.country_name, btrim(technology.technology)
+                          Batches: 1  Memory Usage: 72kB
+                          ->  Nested Loop  (cost=4.84..3102.60 rows=17262 width=43) (actual time=11.703..1267.261 rows=199840 loops=1)
+                                ->  Hash Join  (cost=4.84..2599.12 rows=1918 width=52) (actual time=11.671..192.666 rows=37152 loops=1)
+                                      Hash Cond: (f.country_id = c.country_id)
+                                      ->  Seq Scan on fact_responses f  (cost=0.00..2354.84 rows=89184 width=45) (actual time=0.047..112.365 rows=89184 loops=1)
+                                            Filter: (languagehaveworkedwith IS NOT NULL)
+                                      ->  Hash  (cost=4.79..4.79 rows=4 width=15) (actual time=0.095..0.098 rows=4 loops=1)
+                                            Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                            ->  Seq Scan on dim_country c  (cost=0.00..4.79 rows=4 width=15) (actual time=0.061..0.087 rows=4 loops=1)
+                                                  Filter: (country_name = ANY ('{"United States of America",India,Germany,"United Kingdom of Great Britain and Northern Ireland"}'::text[]))
+                                                  Rows Removed by Filter: 182
+                                ->  Function Scan on unnest technology  (cost=0.01..0.15 rows=9 width=32) (actual time=0.012..0.021 rows=5 loops=37152)
+                                      Filter: (btrim(technology) <> ''::text)
+Planning Time: 0.636 ms
+Execution Time: 1654.256 ms

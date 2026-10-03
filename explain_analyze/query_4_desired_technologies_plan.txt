@@ -1,0 +1,25 @@
+Sort  (cost=29891.07..29891.07 rows=3 width=48) (actual time=4111.228..4111.280 rows=3 loops=1)
+  Sort Key: ranked.technology_rank
+  Sort Method: quicksort  Memory: 25kB
+  ->  Subquery Scan on ranked  (cost=29890.75..29891.04 rows=3 width=48) (actual time=4111.153..4111.241 rows=3 loops=1)
+        Filter: (ranked.technology_rank <= 3)
+        Rows Removed by Filter: 49
+        ->  WindowAgg  (cost=29890.75..29890.93 rows=9 width=48) (actual time=4111.151..4111.183 rows=52 loops=1)
+              ->  Sort  (cost=29890.75..29890.77 rows=9 width=40) (actual time=4111.040..4111.046 rows=52 loops=1)
+                    Sort Key: (count(*)) DESC, (btrim(desired_language.desired_language))
+                    Sort Method: quicksort  Memory: 27kB
+                    ->  HashAggregate  (cost=29890.40..29890.52 rows=9 width=40) (actual time=4110.741..4110.754 rows=52 loops=1)
+                          Group Key: btrim(desired_language.desired_language)
+                          Batches: 1  Memory Usage: 24kB
+                          ->  Nested Loop  (cost=0.01..27883.76 rows=401328 width=32) (actual time=0.086..3510.380 rows=215697 loops=1)
+                                ->  Seq Scan on fact_responses f  (cost=0.00..16178.36 rows=44592 width=31) (actual time=0.071..2136.419 rows=43158 loops=1)
+                                      Filter: ((languagehaveworkedwith IS NOT NULL) AND (languagewanttoworkwith IS NOT NULL) AND (SubPlan 1))
+                                      Rows Removed by Filter: 46026
+                                      SubPlan 1
+                                        ->  Function Scan on unnest lang  (cost=0.01..0.15 rows=1 width=0) (actual time=0.015..0.015 rows=0 loops=89184)
+                                              Filter: (btrim(lang) = 'Python'::text)
+                                              Rows Removed by Filter: 4
+                                ->  Function Scan on unnest desired_language  (cost=0.01..0.15 rows=9 width=32) (actual time=0.010..0.022 rows=5 loops=43158)
+                                      Filter: (btrim(desired_language) <> ''::text)
+Planning Time: 6.069 ms
+Execution Time: 4117.366 ms

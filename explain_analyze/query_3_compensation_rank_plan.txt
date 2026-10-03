@@ -1,0 +1,17 @@
+Sort  (cost=10749.48..10867.34 rows=47144 width=37) (actual time=2340.115..2360.324 rows=47950 loops=1)
+  Sort Key: f.yearscode, (rank() OVER (?)), f.response_id
+  Sort Method: external merge  Disk: 2680kB
+  ->  WindowAgg  (cost=6147.10..7089.98 rows=47144 width=37) (actual time=1642.746..1932.326 rows=47950 loops=1)
+        ->  Sort  (cost=6147.10..6264.96 rows=47144 width=29) (actual time=1642.653..1718.297 rows=47950 loops=1)
+              Sort Key: f.yearscode, f.convertedcompyearly DESC
+              Sort Method: external merge  Disk: 2344kB
+              ->  Hash Join  (cost=6.19..2487.59 rows=47144 width=29) (actual time=0.721..340.745 rows=47950 loops=1)
+                    Hash Cond: (f.country_id = c.country_id)
+                    ->  Seq Scan on fact_responses f  (cost=0.00..2354.84 rows=47144 width=22) (actual time=0.127..315.551 rows=47950 loops=1)
+                          Filter: ((convertedcompyearly IS NOT NULL) AND (yearscode IS NOT NULL))
+                          Rows Removed by Filter: 41234
+                    ->  Hash  (cost=3.86..3.86 rows=186 width=15) (actual time=0.523..0.529 rows=186 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 17kB
+                          ->  Seq Scan on dim_country c  (cost=0.00..3.86 rows=186 width=15) (actual time=0.014..0.059 rows=186 loops=1)
+Planning Time: 4.130 ms
+Execution Time: 2367.026 ms

@@ -1,0 +1,22 @@
+services:
+  postgres:
+    ports: !reset []
+
+  etl:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stackoverflow-etl
+    working_dir: /app
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGDATABASE: survey_db
+      PGUSER: survey_user
+      PGPASSWORD: survey_password
+    volumes:
+      - ./:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["python", "-c", "import time; time.sleep(2147483647)"]

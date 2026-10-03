@@ -1,0 +1,21 @@
+country,technology,developer_count,technology_rank
+Germany,JavaScript,4217,1
+Germany,HTML/CSS,3759,2
+Germany,Python,3686,3
+Germany,SQL,3407,4
+Germany,TypeScript,2950,5
+India,JavaScript,3742,1
+India,HTML/CSS,3158,2
+India,Python,2793,3
+India,SQL,2400,4
+India,Java,2130,5
+United Kingdom of Great Britain and Northern Ireland,JavaScript,3468,1
+United Kingdom of Great Britain and Northern Ireland,HTML/CSS,2944,2
+United Kingdom of Great Britain and Northern Ireland,Python,2752,3
+United Kingdom of Great Britain and Northern Ireland,SQL,2735,4
+United Kingdom of Great Britain and Northern Ireland,TypeScript,2087,5
+United States of America,JavaScript,12032,1
+United States of America,Python,10062,2
+United States of America,HTML/CSS,9878,3
+United States of America,SQL,9457,4
+United States of America,Bash/Shell (all shells),7484,5
